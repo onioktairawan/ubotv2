@@ -1,17 +1,15 @@
 from telethon import TelegramClient, events
 from telethon.errors import ChatAdminRequiredError
-import asyncio
+from config import API_ID, API_HASH, SESSION_USER
 
-api_id = 123456        # Ganti dengan milikmu
-api_hash = "your_api_hash"
-session = "user"       # Session name
-
-client = TelegramClient(session, api_id, api_hash)
+# Membuat client dengan session untuk userbot
+client = TelegramClient(SESSION_USER, API_ID, API_HASH)
 
 async def start():
     await client.start()
     print("✅ Userbot aktif")
 
+    # Fitur .pin untuk mem-pin pesan yang di-reply
     @client.on(events.NewMessage(outgoing=True, pattern=r"\.pin"))
     async def pin_handler(event):
         if event.is_reply:
@@ -27,3 +25,8 @@ async def start():
             await event.respond("↩️ Balas pesan yang ingin kamu pin, lalu ketik `.pin`")
 
     await client.run_until_disconnected()
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(start())
+
