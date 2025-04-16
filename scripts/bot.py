@@ -16,7 +16,6 @@ async def start():
     await bot.start(bot_token=BOT_TOKEN)
     print("🤖 Bot aktif")
 
-    # Command /menu
     @bot.on(events.NewMessage(pattern="/menu"))
     async def show_menu(event):
         header = (
@@ -37,30 +36,17 @@ async def start():
 
         await event.respond(header, buttons=buttons)
 
-    # Callback handler
+    # Handle tombol callback
     @bot.on(events.CallbackQuery)
-    async def feature_detail(event):
-        fitur = {
-            b"pin": ".pin - untuk menyematkan pesan",
-            b"admin": ".admin - fitur admin grup",
-            b"spam": ".spam - untuk mengatur spam",
-            b"dll1": ".dll1 - deskripsi fitur dll1",
-            b"dll2": ".dll2 - deskripsi fitur dll2",
-            b"dll3": ".dll3 - deskripsi fitur dll3",
-            b"dll4": ".dll4 - deskripsi fitur dll4",
-            b"dll5": ".dll5 - deskripsi fitur dll5",
-            b"dll6": ".dll6 - deskripsi fitur dll6",
-            b"prev": "🔄 Kembali ke halaman sebelumnya",
-            b"back": "🔙 Menutup menu",
-            b"next": "➡️ Menu selanjutnya"
-        }
+    async def callback_handler(event):
+        data = event.data.decode("utf-8")
 
-        data = event.data
-        jawaban = fitur.get(data, "❓ Tidak diketahui")
-        await event.answer(jawaban, alert=True)
+        if data == "pin":
+            await event.respond("🔹 **Pin Menu**\n\n`.pin` — untuk menyematkan pesan.\n`.unpin` — untuk melepas sematan.")
+        elif data == "admin":
+            await event.respond("🔹 **Admin Menu**\n\n`.promote` — angkat jadi admin.\n`.demote` — turunkan admin.")
+        elif data == "spam":
+            await event.respond("🔹 **Spam Menu**\n\n`.mute` — bisukan.\n`.ban` — blokir pengguna.")
+        else:
+            await event.answer("Belum ada konten untuk tombol ini", alert=True)
 
-    await bot.run_until_disconnected()
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(start())
