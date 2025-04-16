@@ -1,0 +1,6 @@
+{
+  "api_id": 14359445,      // Ganti dengan api_id yang kamu dapatkan
+  "api_hash": "2f409670095a6bc7f6faa5b1324df2f6",  // Ganti dengan api_hash dari Telegram
+  "bot_token": "7768837888:AAFp9J3EwuaNL_c7MRXAzbFWdI2uYyM1Mhw",  // Ganti dengan token bot dari BotFather
+  "session_user": "oni"  // Nama session untuk userbot
+}
