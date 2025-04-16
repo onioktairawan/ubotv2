@@ -1,6 +1,14 @@
+import json
 from telethon import TelegramClient, events
 from telethon.errors import ChatAdminRequiredError
-from config import API_ID, API_HASH, SESSION_USER
+
+# Membaca konfigurasi dari config.json
+with open("config.json", "r") as config_file:
+    config = json.load(config_file)
+
+API_ID = config["api_id"]
+API_HASH = config["api_hash"]
+SESSION_USER = config["session_user"]
 
 # Membuat client dengan session untuk userbot
 client = TelegramClient(SESSION_USER, API_ID, API_HASH)
@@ -29,4 +37,3 @@ async def start():
 if __name__ == "__main__":
     import asyncio
     asyncio.run(start())
-
