@@ -15,16 +15,18 @@ bot = TelegramClient("bot", API_ID, API_HASH)
 # Status halaman
 current_page = 1
 
+# Header umum yang digunakan di semua halaman
+header = (
+    "via @navyfavbot\n"
+    "Inline Help\n"
+    "Prefixes: g\n"
+    "Plugins: 83\n"
+    "serpa gengs\n"
+    "NavyUbot by @kenapanan"
+)
+
 # Template menu utama
 def main_menu():
-    header = (
-        "via @navyfavbot\n"
-        "Inline Help\n"
-        "Prefixes: g\n"
-        "Plugins: 83\n"
-        "serpa gengs\n"
-        "NavyUbot by @kenapanan"
-    )
     buttons = [
         [Button.inline("Pin", b"pin"), Button.inline("Admin", b"admin"), Button.inline("Spam", b"spam")],
         [Button.inline("Dll", b"dll1"), Button.inline("Dll", b"dll2"), Button.inline("Dll", b"dll3")],
@@ -35,11 +37,6 @@ def main_menu():
 
 # Menu halaman kedua dengan tombol Dll 3x4
 def second_page_menu():
-    text = (
-        "**Halaman Kedua**\n\n"
-        "Ini adalah halaman kedua.\n"
-        "Pilih opsi berikut."
-    )
     buttons = [
         [Button.inline("Dll", b"dll7"), Button.inline("Dll", b"dll8"), Button.inline("Dll", b"dll9")],
         [Button.inline("Dll", b"dll10"), Button.inline("Dll", b"dll11"), Button.inline("Dll", b"dll12")],
@@ -47,7 +44,7 @@ def second_page_menu():
         [Button.inline("Dll", b"dll16"), Button.inline("Dll", b"dll17"), Button.inline("Dll", b"dll18")],
         [Button.inline("Prev", b"prev"), Button.inline("Kembali", b"back_main"), Button.inline("Next", b"next")]
     ]
-    return text, buttons
+    return header, buttons
 
 # Menu deskripsi fitur
 def pin_menu():
