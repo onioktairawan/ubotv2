@@ -2,74 +2,63 @@ import json
 from telethon import TelegramClient, events
 from telethon.tl.custom import Button
 
-# Membaca konfigurasi dari config.json
-with open("config.json", "r") as config_file:
-    config = json.load(config_file)
+# Load config
+with open("config.json", "r") as f:
+    config = json.load(f)
 
 API_ID = config["api_id"]
 API_HASH = config["api_hash"]
 BOT_TOKEN = config["bot_token"]
 
-# Membuat client bot dengan bot token
 bot = TelegramClient("bot", API_ID, API_HASH)
 
 async def start():
     await bot.start(bot_token=BOT_TOKEN)
     print("🤖 Bot aktif")
 
-    # Menampilkan menu fitur userbot
+    # Command /menu
     @bot.on(events.NewMessage(pattern="/menu"))
-    async def menu_handler(event):
+    async def show_menu(event):
         header = (
-            "⚡ **Header**\n"
-            "Via @navyfavbot\n"
+            "via @navyfavbot\n"
             "Inline Help\n"
             "Prefixes: g\n"
-            "Plugins: 83\n\n"
-            "**Serpa Gengs**\n"
-            "NavyUbot by @usnownerbot"
+            "Plugins: 83\n"
+            "serpa gengs\n"
+            "NavyUbot by @kenapanan\n"
         )
 
-        # Daftar fitur
-        features = (
-            "🔹 Pin | 🔹 Admin | 🔹 Spam\n"
-            "🔹 Dll | 🔹 Dll | 🔹 Dll\n"
-            "🔹 Dll | 🔹 Dll | 🔹 Dll"
-        )
-
-        # Tombol untuk navigasi dan fitur
         buttons = [
-            [Button.inline("Pin", data="pin")],
-            [Button.inline("Admin", data="admin")],
-            [Button.inline("Spam", data="spam")],
-            [Button.inline("Prev", data="prev"), Button.inline("Kembali", data="back"), Button.inline("Next", data="next")]
+            [Button.inline("🔹 Pin", b"pin"), Button.inline("🔹 Admin", b"admin"), Button.inline("🔹 Spam", b"spam")],
+            [Button.inline("🔹 Dll", b"dll1"), Button.inline("🔹 Dll", b"dll2"), Button.inline("🔹 Dll", b"dll3")],
+            [Button.inline("🔹 Dll", b"dll4"), Button.inline("🔹 Dll", b"dll5"), Button.inline("🔹 Dll", b"dll6")],
+            [Button.inline("🔄 Prev", b"prev"), Button.inline("🔙 Kembali", b"back"), Button.inline("➡️ Next", b"next")]
         ]
 
-        # Kirim pesan dengan inline buttons
-        await event.respond(
-            f"{header}\n\n{features}",
-            buttons=buttons
-        )
+        await event.respond(header, buttons=buttons)
 
-    # Menangani klik tombol inline
+    # Callback handler
     @bot.on(events.CallbackQuery)
-    async def callback_handler(event):
-        if event.data == b"prev":
-            await event.answer("🔙 Memuat halaman sebelumnya...")
-        elif event.data == b"next":
-            await event.answer("➡️ Memuat halaman berikutnya...")
-        elif event.data == b"back":
-            await event.answer("🔄 Kembali ke menu utama.")
-        elif event.data == b"pin":
-            # Menampilkan deskripsi untuk Pin
-            await event.answer("📌 *Pin message* akan disematkan. Gunakan `.pin \"pesan yang ingin dipin\"` untuk menyematkan pesan.")
-        elif event.data == b"admin":
-            # Menampilkan deskripsi untuk Admin
-            await event.answer("👑 *Admin* fitur untuk mengelola grup dan user. Gunakan perintah seperti `.ban`, `.mute`, dll.")
-        elif event.data == b"spam":
-            # Menampilkan deskripsi untuk Spam
-            await event.answer("🚫 *Spam* fitur untuk mengatasi pesan spam dalam grup. Gunakan `.spam` untuk mengaktifkan fitur ini.")
-        
+    async def feature_detail(event):
+        fitur = {
+            b"pin": ".pin - untuk menyematkan pesan",
+            b"admin": ".admin - fitur admin grup",
+            b"spam": ".spam - untuk mengatur spam",
+            b"dll1": ".dll1 - deskripsi fitur dll1",
+            b"dll2": ".dll2 - deskripsi fitur dll2",
+            b"dll3": ".dll3 - deskripsi fitur dll3",
+            b"dll4": ".dll4 - deskripsi fitur dll4",
+            b"dll5": ".dll5 - deskripsi fitur dll5",
+            b"dll6": ".dll6 - deskripsi fitur dll6",
+            b"prev": "🔄 Kembali ke halaman sebelumnya",
+            b"back": "🔙 Menutup menu",
+            b"next": "➡️ Menu selanjutnya"
+        }
+
+        data = event.data
+        jawaban = fitur.get(data, "❓ Tidak diketahui")
+        await event.answer(jawaban, alert=True)
+
     await bot.run_until_disconnected()
 
 if __name__ == "__main__":
