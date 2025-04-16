@@ -12,6 +12,9 @@ BOT_TOKEN = config["bot_token"]
 
 bot = TelegramClient("bot", API_ID, API_HASH)
 
+# Status halaman
+current_page = 1
+
 # Template menu utama
 def main_menu():
     header = (
@@ -26,9 +29,25 @@ def main_menu():
         [Button.inline("Pin", b"pin"), Button.inline("Admin", b"admin"), Button.inline("Spam", b"spam")],
         [Button.inline("Dll", b"dll1"), Button.inline("Dll", b"dll2"), Button.inline("Dll", b"dll3")],
         [Button.inline("Dll", b"dll4"), Button.inline("Dll", b"dll5"), Button.inline("Dll", b"dll6")],
-        [Button.inline("Prev", b"prev"), Button.inline("Kembali", b"back_main"), Button.inline("Next", b"next")]
+        [Button.inline("Next", b"next")]
     ]
     return header, buttons
+
+# Menu halaman kedua dengan tombol Dll 3x4
+def second_page_menu():
+    text = (
+        "**Halaman Kedua**\n\n"
+        "Ini adalah halaman kedua.\n"
+        "Pilih opsi berikut."
+    )
+    buttons = [
+        [Button.inline("Dll", b"dll7"), Button.inline("Dll", b"dll8"), Button.inline("Dll", b"dll9")],
+        [Button.inline("Dll", b"dll10"), Button.inline("Dll", b"dll11"), Button.inline("Dll", b"dll12")],
+        [Button.inline("Dll", b"dll13"), Button.inline("Dll", b"dll14"), Button.inline("Dll", b"dll15")],
+        [Button.inline("Dll", b"dll16"), Button.inline("Dll", b"dll17"), Button.inline("Dll", b"dll18")],
+        [Button.inline("Prev", b"prev"), Button.inline("Kembali", b"back_main")]
+    ]
+    return text, buttons
 
 # Menu deskripsi fitur
 def pin_menu():
@@ -41,7 +60,6 @@ def pin_menu():
         [Button.inline("Kembali", b"back_main")]
     ]
     return text, buttons
-
 
 def admin_menu():
     text = (
@@ -71,11 +89,16 @@ async def start():
 
     @bot.on(events.NewMessage(pattern="/menu"))
     async def show_menu(event):
-        header, buttons = main_menu()
+        global current_page
+        if current_page == 1:
+            header, buttons = main_menu()
+        else:
+            header, buttons = second_page_menu()
         await event.respond(header, buttons=buttons)
 
     @bot.on(events.CallbackQuery)
     async def callback_handler(event):
+        global current_page
         data = event.data.decode("utf-8")
 
         if data == "pin":
@@ -88,6 +111,15 @@ async def start():
             text, buttons = spam_menu()
             await event.edit(text, buttons=buttons)
         elif data == "back_main":
+            current_page = 1  # Reset ke halaman utama
+            header, buttons = main_menu()
+            await event.edit(header, buttons=buttons)
+        elif data == "next":
+            current_page = 2  # Pindah ke halaman kedua
+            header, buttons = second_page_menu()
+            await event.edit(header, buttons=buttons)
+        elif data == "prev":
+            current_page = 1  # Kembali ke halaman pertama
             header, buttons = main_menu()
             await event.edit(header, buttons=buttons)
         else:
