@@ -1,6 +1,5 @@
 import json
 from telethon import TelegramClient, events
-from telethon.tl.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from telethon.tl.custom import Button
 
 # Load config
@@ -13,7 +12,7 @@ BOT_TOKEN = config["bot_token"]
 
 bot = TelegramClient("bot", API_ID, API_HASH)
 
-# Template menu utama
+# Menu Utama
 def main_menu():
     header = (
         "via @navyfavbot\n"
@@ -38,7 +37,9 @@ def pin_menu():
         "`.pin` — untuk menyematkan pesan.\n"
         "`.unpin` — untuk melepas sematan."
     )
-    buttons = [[Button.inline("Kembali", b"back_main")]]
+    buttons = [
+        [Button.inline("Kembali", b"back_main")]
+    ]
     return text, buttons
 
 def admin_menu():
@@ -47,7 +48,9 @@ def admin_menu():
         "`.promote` — angkat jadi admin.\n"
         "`.demote` — turunkan admin."
     )
-    buttons = [[Button.inline("Kembali", b"back_main")]]
+    buttons = [
+        [Button.inline("Kembali", b"back_main")]
+    ]
     return text, buttons
 
 def spam_menu():
@@ -56,53 +59,22 @@ def spam_menu():
         "`.mute` — bisukan pengguna.\n"
         "`.ban` — blokir pengguna."
     )
-    buttons = [[Button.inline("Kembali", b"back_main")]]
+    buttons = [
+        [Button.inline("Kembali", b"back_main")]
+    ]
     return text, buttons
 
 async def start():
     await bot.start(bot_token=BOT_TOKEN)
     print("🤖 Bot aktif")
 
-    # Perintah /menukeyboard untuk menampilkan atau menyembunyikan tombol
-    @bot.on(events.NewMessage(pattern="/menukeyboard"))
-    async def toggle_keyboard(event):
-        msg_text = event.raw_text.strip().lower()
-        if "menu" in msg_text:
-            keyboard = ReplyKeyboardMarkup(
-                rows=[
-                    [KeyboardButton("/start")],
-                    [KeyboardButton("/menu")],
-                    [KeyboardButton("/restart")],
-                    [KeyboardButton("Tutup")]
-                ],
-                resize=True
-            )
-            await event.respond("📋 Menu ditampilkan.", buttons=keyboard)
-        elif "tutup" in msg_text:
-            await event.respond("🗂️ Menu disembunyikan.", buttons=ReplyKeyboardRemove())
-
-    # Respon terhadap tombol "Tutup"
-    @bot.on(events.NewMessage(pattern="Tutup"))
-    async def close_keyboard(event):
-        await event.respond("✅ Menu ditutup.", buttons=ReplyKeyboardRemove())
-
-    # /start default
-    @bot.on(events.NewMessage(pattern="/start"))
-    async def start_cmd(event):
-        keyboard = ReplyKeyboardMarkup(
-            rows=[
-                [KeyboardButton("Menu")],
-            ],
-            resize=True
-        )
-        await event.respond("Selamat datang!\nKlik 'Menu' untuk melihat perintah.", buttons=keyboard)
-
-    # /menu = tampilkan inline menu
+    # Menangani perintah /menu
     @bot.on(events.NewMessage(pattern="/menu"))
     async def show_menu(event):
         header, buttons = main_menu()
         await event.respond(header, buttons=buttons)
 
+    # Menangani klik tombol inline
     @bot.on(events.CallbackQuery)
     async def callback_handler(event):
         data = event.data.decode("utf-8")
@@ -119,8 +91,22 @@ async def start():
         elif data == "back_main":
             header, buttons = main_menu()
             await event.edit(header, buttons=buttons)
-        else:
-            await event.answer("Belum tersedia.", alert=True)
+        elif data == "dll1":
+            await event.answer("DLL 1 Selected!", alert=True)
+        elif data == "dll2":
+            await event.answer("DLL 2 Selected!", alert=True)
+        elif data == "dll3":
+            await event.answer("DLL 3 Selected!", alert=True)
+        elif data == "dll4":
+            await event.answer("DLL 4 Selected!", alert=True)
+        elif data == "dll5":
+            await event.answer("DLL 5 Selected!", alert=True)
+        elif data == "dll6":
+            await event.answer("DLL 6 Selected!", alert=True)
+        elif data == "prev":
+            await event.answer("Previous action selected!")
+        elif data == "next":
+            await event.answer("Next action selected!")
 
 if __name__ == "__main__":
     import asyncio
