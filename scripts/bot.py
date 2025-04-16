@@ -1,6 +1,13 @@
-from telethon import TelegramClient, events
 import json
-from config import API_ID, API_HASH, BOT_TOKEN
+from telethon import TelegramClient, events
+
+# Membaca konfigurasi dari config.json
+with open("config.json", "r") as config_file:
+    config = json.load(config_file)
+
+API_ID = config["api_id"]
+API_HASH = config["api_hash"]
+BOT_TOKEN = config["bot_token"]
 
 # Membuat client bot dengan bot token
 bot = TelegramClient("bot", API_ID, API_HASH)
