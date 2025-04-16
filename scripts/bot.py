@@ -108,6 +108,112 @@ async def start():
         elif data == "next":
             await event.answer("Next action selected!")
 
+
+# Menu utama untuk reset, prefix, status akun, dan userbot
+def main_menu():
+    header = (
+        "Selamat datang! Pilih menu di bawah ini:\n"
+        "Klik salah satu tombol untuk melanjutkan."
+    )
+    buttons = [
+        [Button.inline("Reset", b"reset"), Button.inline("Prefix", b"prefix"), Button.inline("Status Akun", b"status")],
+        [Button.inline("Mulai Userbot", b"start_userbot"), Button.inline("Tutup Menu", b"close_menu")]
+    ]
+    return header, buttons
+
+# Menu reset
+def reset_menu():
+    text = (
+        "**Reset Menu**\n\n"
+        "Klik tombol di bawah untuk mereset pengaturan bot."
+    )
+    buttons = [
+        [Button.inline("Reset Pengaturan", b"confirm_reset"), Button.inline("Kembali", b"back_main")]
+    ]
+    return text, buttons
+
+# Menu prefix
+def prefix_menu():
+    text = (
+        "**Prefix Menu**\n\n"
+        "Ubah prefix untuk perintah bot.\n"
+        "Contoh: `g` untuk mulai mengetik perintah."
+    )
+    buttons = [
+        [Button.inline("Set Prefix Baru", b"set_prefix"), Button.inline("Kembali", b"back_main")]
+    ]
+    return text, buttons
+
+# Status Akun
+def status_menu():
+    text = (
+        "**Status Akun**\n\n"
+        "Cek status akun bot saat ini.\n"
+        "Apakah bot sedang aktif atau tidak."
+    )
+    buttons = [
+        [Button.inline("Cek Status", b"check_status"), Button.inline("Kembali", b"back_main")]
+    ]
+    return text, buttons
+
+# Mulai Userbot
+def start_userbot_menu():
+    text = (
+        "**Mulai Userbot**\n\n"
+        "Klik tombol di bawah untuk memulai setup userbot."
+    )
+    buttons = [
+        [Button.inline("Mulai Setup Userbot", b"setup_userbot"), Button.inline("Kembali", b"back_main")]
+    ]
+    return text, buttons
+
+async def start():
+    await bot.start(bot_token=BOT_TOKEN)
+    print("🤖 Bot aktif")
+
+    @bot.on(events.NewMessage(pattern="/menu"))
+    async def show_menu(event):
+        header, buttons = main_menu()
+        await event.respond(header, buttons=buttons)
+
+    # Menangani klik tombol inline
+    @bot.on(events.CallbackQuery)
+    async def callback_handler(event):
+        data = event.data.decode("utf-8")
+
+        if data == "reset":
+            text, buttons = reset_menu()
+            await event.edit(text, buttons=buttons)
+        elif data == "prefix":
+            text, buttons = prefix_menu()
+            await event.edit(text, buttons=buttons)
+        elif data == "status":
+            text, buttons = status_menu()
+            await event.edit(text, buttons=buttons)
+        elif data == "start_userbot":
+            text, buttons = start_userbot_menu()
+            await event.edit(text, buttons=buttons)
+        elif data == "close_menu":
+            await event.answer("Menu ditutup.", alert=True)
+            await event.edit("Menu telah ditutup.", buttons=[])
+        elif data == "confirm_reset":
+            # Reset pengaturan bot
+            await event.answer("Pengaturan bot telah direset.", alert=True)
+            await event.edit("Pengaturan bot telah direset.", buttons=[])
+        elif data == "set_prefix":
+            await event.answer("Prefix telah diubah.", alert=True)
+            await event.edit("Prefix berhasil diubah.", buttons=[])
+        elif data == "check_status":
+            await event.answer("Bot sedang aktif.", alert=True)
+            await event.edit("Status bot: Aktif.", buttons=[])
+        elif data == "setup_userbot":
+            await event.answer("Userbot sedang disiapkan.", alert=True)
+            await event.edit("Userbot berhasil disiapkan.", buttons=[])
+        elif data == "back_main":
+            header, buttons = main_menu()
+            await event.edit(header, buttons=buttons)
+
+
 if __name__ == "__main__":
     import asyncio
     asyncio.run(start())
