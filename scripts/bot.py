@@ -45,7 +45,7 @@ def second_page_menu():
         [Button.inline("Dll", b"dll10"), Button.inline("Dll", b"dll11"), Button.inline("Dll", b"dll12")],
         [Button.inline("Dll", b"dll13"), Button.inline("Dll", b"dll14"), Button.inline("Dll", b"dll15")],
         [Button.inline("Dll", b"dll16"), Button.inline("Dll", b"dll17"), Button.inline("Dll", b"dll18")],
-        [Button.inline("Prev", b"prev"), Button.inline("Kembali", b"back_main")]
+        [Button.inline("Prev", b"prev"), Button.inline("Kembali", b"back_main"), Button.inline("Next", b"next")]
     ]
     return text, buttons
 
