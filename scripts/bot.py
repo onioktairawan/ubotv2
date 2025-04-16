@@ -1,4 +1,6 @@
 import json
+import os
+import sys
 from telethon import TelegramClient, events
 from telethon.tl.custom import Button
 
@@ -42,7 +44,6 @@ def pin_menu():
     ]
     return text, buttons
 
-
 def admin_menu():
     text = (
         "**Admin Menu**\n\n"
@@ -65,9 +66,24 @@ def spam_menu():
     ]
     return text, buttons
 
+# Fungsi utama
 async def start():
     await bot.start(bot_token=BOT_TOKEN)
     print("🤖 Bot aktif")
+
+    @bot.on(events.NewMessage(pattern="/start"))
+    async def start_command(event):
+        keyboard = [
+            [Button.text("/start"), Button.text("/restart")],
+            [Button.text("/menu")]
+        ]
+        await event.respond("👋 Selamat datang! Pilih perintah dari keyboard di bawah ini:", buttons=keyboard)
+
+    @bot.on(events.NewMessage(pattern="/restart"))
+    async def restart_command(event):
+        await event.respond("♻️ Restarting bot...")
+        await bot.disconnect()
+        os.execv(sys.executable, [sys.executable] + sys.argv)
 
     @bot.on(events.NewMessage(pattern="/menu"))
     async def show_menu(event):
@@ -92,3 +108,8 @@ async def start():
             await event.edit(header, buttons=buttons)
         else:
             await event.answer("Belum tersedia.", alert=True)
+
+# Jalankan bot
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(start())
