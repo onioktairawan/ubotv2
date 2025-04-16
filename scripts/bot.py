@@ -1,5 +1,3 @@
-bot.py
-
 import json
 from telethon import TelegramClient, events
 from telethon.tl.custom import Button
