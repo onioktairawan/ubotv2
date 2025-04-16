@@ -12,10 +12,12 @@ BOT_TOKEN = config["bot_token"]
 
 bot = TelegramClient("bot", API_ID, API_HASH)
 
+
 async def start():
     await bot.start(bot_token=BOT_TOKEN)
     print("🤖 Bot aktif")
 
+    # Menu utama saat /menu dikirim
     @bot.on(events.NewMessage(pattern="/menu"))
     async def show_menu(event):
         header = (
@@ -36,7 +38,7 @@ async def start():
 
         await event.respond(header, buttons=buttons)
 
-    # Handle tombol callback
+    # Handle saat tombol ditekan
     @bot.on(events.CallbackQuery)
     async def callback_handler(event):
         data = event.data.decode("utf-8")
@@ -46,7 +48,6 @@ async def start():
         elif data == "admin":
             await event.respond("🔹 **Admin Menu**\n\n`.promote` — angkat jadi admin.\n`.demote` — turunkan admin.")
         elif data == "spam":
-            await event.respond("🔹 **Spam Menu**\n\n`.mute` — bisukan.\n`.ban` — blokir pengguna.")
+            await event.respond("🔹 **Spam Menu**\n\n`.mute` — bisukan pengguna.\n`.ban` — blokir pengguna.")
         else:
             await event.answer("Belum ada konten untuk tombol ini", alert=True)
-
