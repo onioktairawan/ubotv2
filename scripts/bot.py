@@ -1,7 +1,6 @@
 import json
-import os
-import sys
 from telethon import TelegramClient, events
+from telethon.tl.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from telethon.tl.custom import Button
 
 # Load config
@@ -39,9 +38,7 @@ def pin_menu():
         "`.pin` — untuk menyematkan pesan.\n"
         "`.unpin` — untuk melepas sematan."
     )
-    buttons = [
-        [Button.inline("Kembali", b"back_main")]
-    ]
+    buttons = [[Button.inline("Kembali", b"back_main")]]
     return text, buttons
 
 def admin_menu():
@@ -50,9 +47,7 @@ def admin_menu():
         "`.promote` — angkat jadi admin.\n"
         "`.demote` — turunkan admin."
     )
-    buttons = [
-        [Button.inline("Kembali", b"back_main")]
-    ]
+    buttons = [[Button.inline("Kembali", b"back_main")]]
     return text, buttons
 
 def spam_menu():
@@ -61,30 +56,48 @@ def spam_menu():
         "`.mute` — bisukan pengguna.\n"
         "`.ban` — blokir pengguna."
     )
-    buttons = [
-        [Button.inline("Kembali", b"back_main")]
-    ]
+    buttons = [[Button.inline("Kembali", b"back_main")]]
     return text, buttons
 
-# Fungsi utama
 async def start():
     await bot.start(bot_token=BOT_TOKEN)
     print("🤖 Bot aktif")
 
+    # Perintah /menukeyboard untuk menampilkan atau menyembunyikan tombol
+    @bot.on(events.NewMessage(pattern="/menukeyboard"))
+    async def toggle_keyboard(event):
+        msg_text = event.raw_text.strip().lower()
+        if "menu" in msg_text:
+            keyboard = ReplyKeyboardMarkup(
+                rows=[
+                    [KeyboardButton("/start")],
+                    [KeyboardButton("/menu")],
+                    [KeyboardButton("/restart")],
+                    [KeyboardButton("Tutup")]
+                ],
+                resize=True
+            )
+            await event.respond("📋 Menu ditampilkan.", buttons=keyboard)
+        elif "tutup" in msg_text:
+            await event.respond("🗂️ Menu disembunyikan.", buttons=ReplyKeyboardRemove())
+
+    # Respon terhadap tombol "Tutup"
+    @bot.on(events.NewMessage(pattern="Tutup"))
+    async def close_keyboard(event):
+        await event.respond("✅ Menu ditutup.", buttons=ReplyKeyboardRemove())
+
+    # /start default
     @bot.on(events.NewMessage(pattern="/start"))
-    async def start_command(event):
-        keyboard = [
-            [Button.text("/start"), Button.text("/restart")],
-            [Button.text("/menu")]
-        ]
-        await event.respond("👋 Selamat datang! Pilih perintah dari keyboard di bawah ini:", buttons=keyboard)
+    async def start_cmd(event):
+        keyboard = ReplyKeyboardMarkup(
+            rows=[
+                [KeyboardButton("Menu")],
+            ],
+            resize=True
+        )
+        await event.respond("Selamat datang!\nKlik 'Menu' untuk melihat perintah.", buttons=keyboard)
 
-    @bot.on(events.NewMessage(pattern="/restart"))
-    async def restart_command(event):
-        await event.respond("♻️ Restarting bot...")
-        await bot.disconnect()
-        os.execv(sys.executable, [sys.executable] + sys.argv)
-
+    # /menu = tampilkan inline menu
     @bot.on(events.NewMessage(pattern="/menu"))
     async def show_menu(event):
         header, buttons = main_menu()
@@ -109,7 +122,6 @@ async def start():
         else:
             await event.answer("Belum tersedia.", alert=True)
 
-# Jalankan bot
 if __name__ == "__main__":
     import asyncio
     asyncio.run(start())
